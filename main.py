@@ -71,7 +71,7 @@ def show_rules():
     print('\n' + rules + '\n' * 10)
 
 
-def check_win():
+def check_win(field, current_player):
     # Заглушка
     return True
 
@@ -80,11 +80,34 @@ def start_game(players):
     field = [' ' for i in range(1, 10)]
     show_field(field)
 
+    current_player = 'X'
+    step = 0
+
+    print('Да начнётся бой!\n\n\n')
     while True:
-        if check_win():
-            print('Победа!')
-            print(players)
+        try:
+            move = int(input(f'{players[current_player]}, ваш ход: ')) - 1
+            if move not in range(9):
+                raise ValueError
+            if field[move] != ' ':
+                raise ValueError
+        except ValueError:
+            print('Неверный номер ячейки, попробуйте ещё.')
+            continue
+        
+        field[move] = current_player
+        show_field(field)
+        step += 1
+        
+        if check_win(field, current_player):
+            print(f'Победил(а) {players[current_player]}!')
             break
+        
+        if step == 9:
+            print('Ничья!')
+            break
+        
+        current_player = '0' if current_player == 'X' else 'X'
 
 
 def run():
@@ -94,7 +117,7 @@ def run():
     show_rules()
     players = input_players_names()
     start_game(players)
-    input('Это была хорошая игра.')
+    input('\n\n' + 'Это была хорошая игра.')
 
 
 if __name__ == '__main__':
